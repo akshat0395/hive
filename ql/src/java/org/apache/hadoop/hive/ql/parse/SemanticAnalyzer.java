@@ -8640,7 +8640,13 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
                 new DummyPartition(dest_tab, dest_tab.getDbName()
                         + "@" + dest_tab.getTableName() + "@" + ppath,
                         partSpec);
-        output = new WriteEntity(p, getWriteType(dest), false);
+        WriteEntity.WriteType writeType;
+        if (ltd.isInsertOverwrite()) {
+          writeType = WriteEntity.WriteType.INSERT_OVERWRITE;
+        } else {
+          writeType = getWriteType(dest);
+        }
+        output = new WriteEntity(p, writeType, false);
         output.setDynamicPartitionWrite(true);
         outputs.add(output);
       }
@@ -13800,6 +13806,11 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       addDbAndTabToOutputs(qualifiedTabName,
               TableType.EXTERNAL_TABLE, isTemporaryTable, retValue, storageFormat);
     }
+
+    if (isIcebergTable(retValue)) {
+      SessionStateUtil.addResourceOrThrow(conf, SessionStateUtil.DEFAULT_TABLE_LOCATION,
+          getDefaultLocation(qualifiedTabName[0], qualifiedTabName[1], true));
+    }
     return retValue;
   }
 
@@ -14211,13 +14222,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       if (location != null) {
         tblLocation = location;
       } else {
-        try {
-          Warehouse wh = new Warehouse(conf);
-          tblLocation = wh.getDefaultTablePath(db.getDatabase(qualifiedTabName.getDb()), qualifiedTabName.getTable(),
-                  isExt).toUri().getPath();
-        } catch (MetaException | HiveException e) {
-          throw new SemanticException(e);
-        }
+        tblLocation = getDefaultLocation(qualifiedTabName.getDb(), qualifiedTabName.getTable(), isExt);
       }
       try {
         HiveStorageHandler storageHandler = HiveUtils.getStorageHandler(conf, storageFormat.getStorageHandler());
@@ -14374,6 +14379,17 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
       throw new SemanticException("Unrecognized command.");
     }
     return null;
+  }
+
+  private String getDefaultLocation(String dbName, String tableName, boolean isExt) throws SemanticException {
+    String tblLocation;
+    try {
+      Warehouse wh = new Warehouse(conf);
+      tblLocation = wh.getDefaultTablePath(db.getDatabase(dbName), tableName, isExt).toUri().getPath();
+    } catch (MetaException | HiveException e) {
+      throw new SemanticException(e);
+    }
+    return tblLocation;
   }
 
   private static boolean isIcebergTable(Map<String, String> tblProps) {

@@ -486,6 +486,9 @@ public final class FunctionRegistry {
     system.registerGenericUDF("!", GenericUDFOPNot.class);
     system.registerGenericUDF("between", GenericUDFBetween.class);
     system.registerGenericUDF("in_bloom_filter", GenericUDFInBloomFilter.class);
+    system.registerGenericUDF("toMap", GenericUDFToMap.class);
+    system.registerGenericUDF("toArray", GenericUDFToArray.class);
+    system.registerGenericUDF("toStruct", GenericUDFToStruct.class);
 
     // Utility UDFs
     system.registerUDF("version", UDFVersion.class, false);
@@ -780,7 +783,17 @@ public final class FunctionRegistry {
 
     try {
       system.registerGenericUDF("iceberg_bucket",
-          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.GenericUDFIcebergBucket"));
+          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.udf.GenericUDFIcebergBucket"));
+      system.registerGenericUDF("iceberg_truncate",
+          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.udf.GenericUDFIcebergTruncate"));
+      system.registerGenericUDF("iceberg_year",
+          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.udf.GenericUDFIcebergYear"));
+      system.registerGenericUDF("iceberg_month",
+          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.udf.GenericUDFIcebergMonth"));
+      system.registerGenericUDF("iceberg_day",
+          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.udf.GenericUDFIcebergDay"));
+      system.registerGenericUDF("iceberg_hour",
+          (Class<? extends GenericUDF>) Class.forName("org.apache.iceberg.mr.hive.udf.GenericUDFIcebergHour"));
     } catch (ClassNotFoundException e) {
       LOG.warn("iceberg_bucket function could not be registered");
     }

@@ -1301,9 +1301,10 @@ public class HiveConf extends Configuration {
      */
     @Deprecated
     METASTORE_BATCH_RETRIEVE_MAX("hive.metastore.batch.retrieve.max", 300,
+         new RangeValidator(1, null),
         "Maximum number of objects (tables/partitions) can be retrieved from metastore in one batch. \n" +
         "The higher the number, the less the number of round trips is needed to the Hive metastore server, \n" +
-        "but it may also cause higher memory requirement at the client side."),
+        "but it may also cause higher memory requirement at the client side. Batch value should be greater than 0."),
     /**
      * @deprecated Use MetastoreConf.BATCH_RETRIEVE_OBJECTS_MAX
      */
@@ -2226,6 +2227,12 @@ public class HiveConf extends Configuration {
     HIVE_ICEBERG_EXPIRE_SNAPSHOT_NUMTHREADS("hive.iceberg.expire.snapshot.numthreads", 4,
         "The number of threads to be used for deleting files during expire snapshot. If set to 0 or below it uses the" +
             " defult DirectExecutorService"),
+
+    HIVE_ICEBERG_MASK_DEFAULT_LOCATION("hive.iceberg.mask.default.location", false,
+        "If this is set to true the URI for auth will have the default location masked with DEFAULT_TABLE_LOCATION"),
+    HIVE_ICEBERG_ALLOW_DATAFILES_IN_TABLE_LOCATION_ONLY("hive.iceberg.allow.datafiles.in.table.location.only", false,
+        "If this is set to true, then all the data files being read should be withing the table location"),
+
     HIVEUSEEXPLICITRCFILEHEADER("hive.exec.rcfile.use.explicit.header", true,
         "If this is set the header for RCFiles will simply be RCF.  If this is not\n" +
         "set the header will be that borrowed from sequence files, e.g. SEQ- followed\n" +
@@ -5571,7 +5578,9 @@ public class HiveConf extends Configuration {
             "hive.zookeeper.ssl.keystore.type," +
             "hive.zookeeper.ssl.truststore.location," +
             "hive.zookeeper.ssl.truststore.password," +
-            "hive.zookeeper.ssl.truststore.type",
+            "hive.zookeeper.ssl.truststore.type," +
+            "hive.iceberg.allow.datafiles.in.table.location.only," +
+            "hive.rewrite.data.policy",
         "Comma separated list of configuration options which are immutable at runtime"),
     HIVE_CONF_HIDDEN_LIST("hive.conf.hidden.list",
         METASTOREPWD.varname + "," + HIVE_SERVER2_SSL_KEYSTORE_PASSWORD.varname
@@ -5731,7 +5740,10 @@ public class HiveConf extends Configuration {
 
     HIVE_ADDITIONAL_CONFIG_FILES("hive.additional.config.files", "",
             "The names of additional config files, such as ldap-site.xml," +
-                    "tez-site.xml, etc in comma separated list.");
+                    "tez-site.xml, etc in comma separated list."),
+
+    REWRITE_POLICY("hive.rewrite.data.policy", "DEFAULT", 
+        "Defines the rewrite policy, the valid values are those defined in RewritePolicy enum"); 
 
     public final String varname;
     public final String altName;
