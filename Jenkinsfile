@@ -317,14 +317,14 @@ time docker rm -f dev_$dbType || true
 set -e
 dev-support/nightly
 '''
-            buildHive("install -Dtest=noMatches -Pdist -Piceberg -pl packaging -am")
+            buildHive("install -Dtest=noMatches -Pdist -pl packaging -am")
         }
         stage('Verify') {
             sh '''#!/bin/bash
 set -e
 tar -xzf packaging/target/apache-hive-*-nightly-*-src.tar.gz
 '''
-            buildHive("install -Dtest=noMatches -Pdist,iceberg -f apache-hive-*-nightly-*/pom.xml")
+            buildHive("install -Dtest=noMatches -Pdist -f apache-hive-*-nightly-*/pom.xml")
         }
       }
   }
