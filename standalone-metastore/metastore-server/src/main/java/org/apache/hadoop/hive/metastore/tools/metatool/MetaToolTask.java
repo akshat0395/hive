@@ -18,19 +18,19 @@
 
 package org.apache.hadoop.hive.metastore.tools.metatool;
 
-import org.apache.hadoop.hive.metastore.tools.MetaToolObjectStore;
+import org.apache.hadoop.hive.metastore.ObjectStore;
 
 abstract class MetaToolTask {
-  private MetaToolObjectStore objectStore;
+  private ObjectStore objectStore;
   private HiveMetaToolCommandLine cl;
 
   abstract void execute();
 
-  void setObjectStore(MetaToolObjectStore objectStore) {
+  void setObjectStore(ObjectStore objectStore) {
     this.objectStore = objectStore;
   }
 
-  protected MetaToolObjectStore getObjectStore() {
+  protected ObjectStore getObjectStore() {
     return objectStore;
   }
 

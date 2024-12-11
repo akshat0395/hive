@@ -27,8 +27,8 @@ import java.io.PrintStream;
 import java.net.URI;
 
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.metastore.ObjectStore;
 import org.apache.hadoop.hive.metastore.annotation.MetastoreUnitTest;
-import org.apache.hadoop.hive.metastore.tools.MetaToolObjectStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,7 +82,7 @@ public class TestMetaToolTaskUpdateLocation {
     URI oldUri = new Path(oldUriString).toUri();
     URI newUri = new Path(newUriString).toUri();
 
-    MetaToolObjectStore mockObjectStore = Mockito.mock(MetaToolObjectStore.class);
+    ObjectStore mockObjectStore = Mockito.mock(ObjectStore.class);
     when(mockObjectStore.updateMDatabaseURI(eq(oldUri), eq(newUri), eq(true))).thenReturn(null);
     when(mockObjectStore.updateMStorageDescriptorTblURI(eq(oldUri), eq(newUri), eq(true))).thenReturn(null);
     when(mockObjectStore.updateTblPropURI(eq(oldUri), eq(newUri), eq(tablePropKey), eq(true))).thenReturn(null);
