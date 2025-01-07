@@ -332,6 +332,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>${maven.test.jvm.args}</argLine>
+          <argLine>${test.jvm.args}</argLine>
           <excludes>
             <exclude>${exclude.tests}</exclude>
           </excludes>
