@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -281,7 +282,11 @@ public abstract class AbstractJDBCConnectorProvider extends AbstractDataConnecto
         String typename = rs.getString("TYPE_NAME");
         FieldSchema fs = new FieldSchema();
         fs.setName(rs.getString("COLUMN_NAME"));
-        fs.setType(getDataType(rs.getString("TYPE_NAME"), rs.getInt("COLUMN_SIZE")));
+        Clob clobData = rs.getClob("TYPE_NAME");  // Fetch as Clob
+        String typeName = (clobData != null) ? clobData.getSubString(1, (int) clobData.length()) : null; // Convert CLOB to String
+        assert typeName != null;
+        fs.setType(getDataType(typeName, rs.getInt("COLUMN_SIZE")));  // Set converted value
+        //fs.setType(getDataType(rs.getString("TYPE_NAME"), rs.getInt("COLUMN_SIZE")));
         fs.setComment("inferred column type");
         cols.add(fs);
       }
