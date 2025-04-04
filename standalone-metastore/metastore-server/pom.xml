@@ -41,12 +41,6 @@
       <artifactId>httpclient</artifactId>
       <version>${httpcomponents.client.version}</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.orc</groupId>
@@ -103,14 +97,17 @@
     <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-core</artifactId>
+      <version>3.2.4</version>
     </dependency>
     <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-jvm</artifactId>
+      <version>3.2.4</version>
     </dependency>
     <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-json</artifactId>
+      <version>3.2.4</version>
     </dependency>
     <dependency>
       <groupId>javolution</groupId>
@@ -282,22 +279,22 @@
     <dependency>
       <groupId>org.datanucleus</groupId>
       <artifactId>datanucleus-api-jdo</artifactId>
-      <version>${datanucleus-api-jdo.version}</version>
+      <version>6.0.0-release</version>
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
       <artifactId>datanucleus-core</artifactId>
-      <version>${datanucleus-core.version}</version>
+      <version>6.0.0-release</version>
     </dependency>
     <dependency>
-      <groupId>org.datanucleus</groupId>
-      <artifactId>datanucleus-rdbms</artifactId>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>patched-datanucleus-rdbms</artifactId>
       <version>${datanucleus-rdbms.version}</version>
     </dependency>
     <dependency>
       <groupId>org.datanucleus</groupId>
       <artifactId>javax.jdo</artifactId>
-      <version>${datanucleus-jdo.version}</version>
+      <version>3.2.0-release</version>
     </dependency>
     <dependency>
       <groupId>org.skyscreamer</groupId>

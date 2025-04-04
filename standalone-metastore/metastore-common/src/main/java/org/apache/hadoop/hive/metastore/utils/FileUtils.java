@@ -633,7 +633,7 @@ public class FileUtils {
     }
 
     @Override
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
     public LocatedFileStatus next() throws IOException {
       if (!hasNext()) {
         throw new NoSuchElementException();

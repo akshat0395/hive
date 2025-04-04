@@ -203,10 +203,10 @@ public abstract class PartitionSpecProxy {
    */
   public static class SimplePartitionWrapperIterator implements PartitionIterator {
     private Partition partition;
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
     public SimplePartitionWrapperIterator(Partition partition) {this.partition = partition;}
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
     @Override public Partition getCurrent() { return partition; }
     @Override public String getCatName() { return partition.getCatName(); }
     @Override public String getDbName() { return partition.getDbName(); }

@@ -68,7 +68,7 @@ public final class SearchArgumentImpl implements SearchArgument {
       this(operator, type, columnName, literal, literalList, null);
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "HIVE-23613: intended_TO_DO")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "intended_to_do")
     public PredicateLeafImpl(Operator operator,
                              Type type,
                              String columnName,
@@ -113,7 +113,7 @@ public final class SearchArgumentImpl implements SearchArgument {
     }
 
     @Override
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
     public List<Object> getLiteralList() {
       if (literalList != null && literalList.size() > 0 && literalList.get(0) instanceof LiteralDelegate) {
         List<Object> newLiteraList = new ArrayList<>();
@@ -238,7 +238,7 @@ public final class SearchArgumentImpl implements SearchArgument {
   }
 
   @Override
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
   public List<PredicateLeaf> getLeaves() {
     return leaves;
   }

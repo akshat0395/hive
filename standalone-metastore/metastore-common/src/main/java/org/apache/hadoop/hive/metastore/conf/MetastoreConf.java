@@ -724,9 +724,6 @@ public class MetastoreConf {
     DATANUCLEUS_AUTOSTART("datanucleus.autoStartMechanismMode",
         "datanucleus.autoStartMechanismMode", "ignored", new StringSetValidator("ignored"),
         "Autostart mechanism for datanucleus.  Currently ignored is the only option supported."),
-    DATANUCLEUS_CACHE_LEVEL1_TYPE("datanucleus.cache.level1.type", "datanucleus.cache.level1.type", "soft",
-        "Stores instances within a PersistenceManager, there are DataNucleus-provided plugins for weak, soft, strong referenced caches, \n" +
-        "none to turn off this cache."),
     DATANUCLEUS_CACHE_LEVEL2("datanucleus.cache.level2", "datanucleus.cache.level2", false,
         "Use a level 2 cache. Turn this off if metadata is changed independently of Hive metastore server"),
     DATANUCLEUS_CACHE_LEVEL2_TYPE("datanucleus.cache.level2.type",
@@ -1858,12 +1855,6 @@ public class MetastoreConf {
         "Whether to retain column statistics during column removals in partitioned tables - disabling this "
             + "purges all column statistics data "
             + "for all partition to retain working consistency"),
-    METADATA_SUMMARY_TIMEOUT("hive.metatool.summary.timeout", "hive.metatool.summary.timeout", 20, TimeUnit.MINUTES,
-        "The maximum time in minutes to wait for the metadata summary task to complete, otherwise the task will be cancelled."),
-    METADATA_SUMMARY_RECENT_UPDATED("hive.metatool.summary.newerThan", "hive.metatool.summary.newerThan", 30, TimeUnit.DAYS,
-        "Only collect the non-native table's summary that has been updated/changed in configured recent days."),
-    METADATA_SUMMARY_MAX_NONNATIVE_TABLES("hive.metatool.summary.maxNonNativeTables", "hive.metatool.summary.maxNonNativeTables", "",
-        "The maximum non-native tables allowed per table type during collecting the summary."),
 
     // These are all values that we put here just for testing
     STR_TEST_ENTRY("test.str", "hive.test.str", "defaultval", "comment"),
@@ -2056,7 +2047,6 @@ public class MetastoreConf {
       ConfVars.CONNECT_URL_KEY,
       ConfVars.CONNECTION_USER_NAME,
       ConfVars.DATANUCLEUS_AUTOSTART,
-      ConfVars.DATANUCLEUS_CACHE_LEVEL1_TYPE,
       ConfVars.DATANUCLEUS_CACHE_LEVEL2,
       ConfVars.DATANUCLEUS_CACHE_LEVEL2_TYPE,
       ConfVars.DATANUCLEUS_INIT_COL_INFO,
@@ -2387,7 +2377,7 @@ public class MetastoreConf {
    * @param var variable to retrieve
    * @return value, or default value if value not in config file
    */
-  @SuppressFBWarnings(value = "DM_BOXED_PRIMITIVE_FOR_PARSING", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "DM_BOXED_PRIMITIVE_FOR_PARSING", justification = "intended_to_do")
   public static double getDoubleVar(Configuration conf, ConfVars var) {
     assert var.defaultVal.getClass() == Double.class;
     String val = conf.get(var.varname);

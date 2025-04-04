@@ -31,7 +31,7 @@ public class DagJsonParserUtils {
   private static final List<String> operatorNoStats = Arrays.asList(new String[] { "File Output Operator",
       "Reduce Output Operator" });
 
-  @SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "intended_to_do")
   public static List<String> getOperatorNoStats() {
     return operatorNoStats;
   }

@@ -162,7 +162,7 @@ public class ExpressionTree {
     return operator;
   }
 
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
   public List<ExpressionTree> getChildren() {
     return children;
   }

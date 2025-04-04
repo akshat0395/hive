@@ -28,7 +28,6 @@ import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.common.ZooKeeperHiveHelper;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience;
 import org.apache.hadoop.hive.common.classification.InterfaceAudience.LimitedPrivate;
-import org.apache.hadoop.hive.common.classification.InterfaceStability;
 import org.apache.hadoop.hive.common.type.TimestampTZUtil;
 import org.apache.hadoop.hive.conf.Validator.PatternSet;
 import org.apache.hadoop.hive.conf.Validator.RangeValidator;
@@ -63,6 +62,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -458,7 +458,7 @@ public class HiveConf extends Configuration {
    * Get a set containing configuration parameter names used by LLAP Server instances
    * @return an unmodifiable set containing llap ConfVars
    */
-  @SuppressFBWarnings(value="MS_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value="MS_EXPOSE_REP", justification = "intended_to_do")
   public static final Set<String> getLlapDaemonConfVars() {
     return llapDaemonVarsSet;
   }
@@ -2013,8 +2013,6 @@ public class HiveConf extends Configuration {
         "Set to 1 to make sure hash aggregation is never turned off."),
     HIVE_MAP_AGGR_HASH_MIN_REDUCTION_LOWER_BOUND("hive.map.aggr.hash.min.reduction.lower.bound", (float) 0.4,
         "Lower bound of Hash aggregate reduction filter. See also: hive.map.aggr.hash.min.reduction"),
-    HIVE_MAP_AGGR_HASH_FLUSH_SIZE_PERCENT("hive.map.aggr.hash.flush.size.percent", (float) 0.1,
-        "Percentage of hash table entries to flush in map-side group aggregation."),
     HIVE_MAP_AGGR_HASH_MIN_REDUCTION_STATS_ADJUST("hive.map.aggr.hash.min.reduction.stats", true,
         "Whether the value for hive.map.aggr.hash.min.reduction should be set statically using stats estimates. \n" +
         "If this is enabled, the default value for hive.map.aggr.hash.min.reduction is only used as an upper-bound\n" +
@@ -2049,10 +2047,6 @@ public class HiveConf extends Configuration {
         "assumption that the original group by will reduce the data size."),
     HIVE_GROUPBY_LIMIT_EXTRASTEP("hive.groupby.limit.extrastep", true, "This parameter decides if Hive should \n" +
         "create new MR job for sorting final output"),
-    HIVE_OPTIMIZE_GROUPING_SET_THRESHOLD("hive.optimize.grouping.set.threshold", 1_000_000_000L,
-        "If # of estimated rows emitted by GroupBy operator with GroupingSet is larger than the configured value, " +
-        "then the optimizer inserts an extra shuffle to partitioning input data.\n" +
-        "Setting a negative number disables the optimization."),
 
     // Max file num and size used to do a single copy (after that, distcp is used)
     HIVE_EXEC_COPYFILE_MAXNUMFILES("hive.exec.copyfile.maxnumfiles", 1L,
@@ -2660,8 +2654,6 @@ public class HiveConf extends Configuration {
         "By default, when writing data into a table and UNION ALL is the last step of the query, Hive on Tez will\n" +
         "create a subdirectory for each branch of the UNION ALL. When this property is enabled,\n" +
         "the subdirectories are removed, and the files are renamed and moved to the parent directory"),
-    HIVE_OPTIMIZE_MERGE_ADJACENT_UNION_DISTINCT("hive.optimize.merge.adjacent.union.distinct", true,
-        "Whether to merge adjacent binary UNION DISTINCT into a single n-ary UNION DISTINCT."),
     HIVE_OPT_CORRELATION("hive.optimize.correlation", false, "exploit intra-query correlations."),
 
     HIVE_OPTIMIZE_LIMIT_TRANSPOSE("hive.optimize.limittranspose", false,
@@ -2771,9 +2763,6 @@ public class HiveConf extends Configuration {
             + " provides an optimization if it is accurate."),
 
     // CTE
-    @InterfaceStability.Unstable
-    HIVE_CTE_SUGGESTER_CLASS("hive.optimize.cte.suggester.class", "",
-        "Class for finding and suggesting common table expressions (CTEs) based on a given query. The class must implement the CommonTableExpressionSuggester interface."),
     HIVE_CTE_MATERIALIZE_THRESHOLD("hive.optimize.cte.materialize.threshold", 3,
         "If the number of references to a CTE clause exceeds this threshold, Hive will materialize it\n" +
         "before executing the main query block. -1 will disable this feature."),
@@ -3875,16 +3864,8 @@ public class HiveConf extends Configuration {
         "partition columns or non-partition columns while displaying columns in describe\n" +
         "table. From 0.12 onwards, they are displayed separately. This flag will let you\n" +
         "get old behavior, if desired. See, test-case in patch for HIVE-6689."),
-    @Deprecated
     HIVE_LINEAGE_INFO("hive.lineage.hook.info.enabled", false,
-        "Whether Hive provides lineage information to hooks." +
-            "Deprecated: use hive.lineage.statement.filter instead."),
-    HIVE_LINEAGE_STATEMENT_FILTER("hive.lineage.statement.filter", "ALL",
-        "Whether Hive provides lineage information to hooks for the specified statements only, " +
-            "the value is a comma-separated list (ex.: CREATE_MATERIALIZED_VIEW," +
-            "CREATE_TABLE,CREATE_TABLE_AS_SELECT). Possible values are: CREATE_TABLE, CREATE_TABLE_AS_SELECT, " +
-            "CREATE_VIEW, CREATE_MATERIALIZED_VIEW, LOAD, QUERY, ALL, NONE." +
-            " ALL means lineage information is always provided, NONE and empty string means never."),
+        "Whether Hive provides lineage information to hooks."),
 
     HIVE_SSL_PROTOCOL_BLACKLIST("hive.ssl.protocol.blacklist", "SSLv2,SSLv3",
         "SSL Versions to disable for all Hive Servers"),
@@ -4027,18 +4008,6 @@ public class HiveConf extends Configuration {
             "Whether to enable xframe\n"),
     HIVE_SERVER2_WEBUI_XFRAME_VALUE("hive.server2.webui.xframe.value", "SAMEORIGIN",
             "Configuration to allow the user to set the x_frame-options value\n"),
-    HIVE_SERVER2_WEBUI_HTTP_COOKIE_MAX_AGE("hive.server2.ui.http.cookie.max.age", "86400s",
-        new TimeValidator(TimeUnit.SECONDS),
-        "Maximum age in seconds for server side cookie used by HS2 in HTTP mode."),
-    HIVE_SERVER2_WEBUI_HTTP_COOKIE_DOMAIN("hive.server2.ui.http.cookie.domain", null,
-        "Domain for the HS2 generated cookies"),
-    HIVE_SERVER2_WEBUI_HTTP_COOKIE_PATH("hive.server2.ui.http.cookie.path", null,
-        "Path for the HS2 generated cookies"),
-    HIVE_SERVER2_WEBUI_AUTH_METHOD("hive.server2.webui.auth.method", "NONE",
-        new StringSet("NONE", "LDAP"),
-        "HS2 WebUI authentication method available to clients to be set at session level.\n" +
-            "  NONE: No authentication\n" +
-            "  LDAP" ),
     HIVE_SERVER2_SHOW_OPERATION_DRILLDOWN_LINK("hive.server2.show.operation.drilldown.link", false,
         "Whether to show the operation's drilldown link to thrift client.\n"),
 
@@ -4788,13 +4757,6 @@ public class HiveConf extends Configuration {
         "Class to use for calculating available slots during split generation"),
     HIVE_TEZ_GENERATE_CONSISTENT_SPLITS("hive.tez.input.generate.consistent.splits", true,
         "Whether to generate consistent split locations when generating splits in the AM"),
-    HIVE_TEZ_INPUT_FS_SERIALIZATION_THRESHOLD("hive.tez.input.fs.serialization.threshold", 268435456,
-        "When the cummulative size of the splits is larger than this (in bytes), HiveSplitGenerator"
-            + " will start to serialize splits to tez scratchdir instead of being sent as RPC payloads directly."
-            + " Default is 256MB."
-            + "-1 disables this feature."),
-    HIVE_TEZ_INPUT_FS_SERIALIZATION_THREADS("hive.tez.input.fs.serialization.threads", 8,
-        "Number of threads used for serializing split payloads to filesystem."),
     HIVE_PREWARM_ENABLED("hive.prewarm.enabled", false, "Enables container prewarm for Tez(Hadoop 2 only)"),
     HIVE_PREWARM_NUM_CONTAINERS("hive.prewarm.numcontainers", 10, "Controls the number of containers to prewarm for Tez (Hadoop 2 only)"),
     HIVE_STAGE_ID_REARRANGE("hive.stageid.rearrange", "none", new StringSet("none", "idonly", "traverse", "execution"), ""),
@@ -5688,14 +5650,12 @@ public class HiveConf extends Configuration {
         "Enable query reexecutions"),
     HIVE_QUERY_REEXECUTION_STRATEGIES("hive.query.reexecution.strategies",
         "overlay,reoptimize,reexecute_lost_am,dagsubmit,recompile_without_cbo,write_conflict",
-        "comma separated list of plugin can be used. If custom plugins, specify the class name:\n"
+        "comma separated list of plugin can be used:\n"
             + "  overlay: hiveconf subtree 'reexec.overlay' is used as an overlay in case of an execution errors out\n"
             + "  reoptimize: collects operator statistics during execution and recompile the query after a failure\n"
             + "  recompile_without_cbo: recompiles query after a CBO failure\n"
             + "  reexecute_lost_am: reexecutes query if it failed due to tez am node gets decommissioned\n "
-            + "  write_conflict: retries the query once if the query failed due to write_conflict\n"
-            + "  custom plugins: e.g.\n"
-            + "    org.apache.hadoop.hive.ql.reexec.custom.CustomPlugin1"),
+            + "  write_conflict: retries the query once if the query failed due to write_conflict"),
     HIVE_QUERY_REEXECUTION_STATS_PERSISTENCE("hive.query.reexecution.stats.persist.scope", "metastore",
         new StringSet("query", "hiveserver", "metastore"),
         "Sets the persistence scope of runtime statistics\n"
@@ -5812,11 +5772,7 @@ public class HiveConf extends Configuration {
                     "tez-site.xml, etc in comma separated list."),
 
     REWRITE_POLICY("hive.rewrite.data.policy", "DEFAULT", 
-        "Defines the rewrite policy, the valid values are those defined in RewritePolicy enum"),
-
-    HIVE_OTEL_METRICS_FREQUENCY_SECONDS("hive.otel.metrics.frequency.seconds", "0s",
-        new TimeValidator(TimeUnit.SECONDS),
-        "Frequency at which the OTEL Metrics are refreshed, A value of 0 or less disable the feature");
+        "Defines the rewrite policy, the valid values are those defined in RewritePolicy enum"); 
 
     public final String varname;
     public final String altName;
@@ -6677,7 +6633,7 @@ public class HiveConf extends Configuration {
     // and regex list
     String confVarPatternStr = Joiner.on("|").join(convertVarsToRegex(SQL_STD_AUTH_SAFE_VAR_NAMES));
     String regexPatternStr = Joiner.on("|").join(sqlStdAuthSafeVarNameRegexes);
-    return regexPatternStr + "|" + confVarPatternStr + "|QUERY_EXECUTOR";
+    return regexPatternStr + "|" + confVarPatternStr;
   }
 
   /**
@@ -7208,7 +7164,7 @@ public class HiveConf extends Configuration {
   private static final Object reverseMapLock = new Object();
   private static HashMap<String, ConfVars> reverseMap = null;
 
-  @SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "intended_to_do")
   public static HashMap<String, ConfVars> getOrCreateReverseMap() {
     // This should be called rarely enough; for now it's ok to just lock every time.
     synchronized (reverseMapLock) {
@@ -7257,5 +7213,16 @@ public class HiveConf extends Configuration {
       Map.Entry<String, String> e = iter.next();
       set(e.getKey(), e.getValue());
     }
+  }
+
+  public List<Map.Entry<String, String>> getMatchingEntries(Pattern regex) {
+    List<Map.Entry<String, String>> matchingEntries = new ArrayList<>();
+    for (Map.Entry<String, String> entry : this) {
+      Matcher matcher = regex.matcher(entry.getKey());
+      if (matcher.matches()) {
+        matchingEntries.add(new AbstractMap.SimpleEntry<>(entry.getKey(), matcher.group(0)));
+      }
+    }
+    return matchingEntries;
   }
 }

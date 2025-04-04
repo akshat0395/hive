@@ -54,7 +54,7 @@ public class CachingPrintStream extends SessionStream {
     super.flush();
   }
 
-  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
   public List<String> getOutput() {
     return output;
   }

@@ -1235,7 +1235,11 @@ public class TestJdbcWithMiniHS2 {
     try {
       constructorCacheField = ReflectionUtil.class.getDeclaredField("CONSTRUCTOR_CACHE");
       if (constructorCacheField != null) {
-        ReflectionUtil.setStaticFinalFieldsModifiable(constructorCacheField);
+        constructorCacheField.setAccessible(true);
+        VarHandle modifiersHandle = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup())
+                .findVarHandle(Field.class, "modifiers", int.class);
+        int modifiers = constructorCacheField.getModifiers();
+        modifiersHandle.set(constructorCacheField, modifiers & ~Modifier.FINAL);
         tmp =
             CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.SECONDS).concurrencyLevel(64)
                 .weakKeys().weakValues().build();

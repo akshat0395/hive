@@ -261,7 +261,7 @@ public class HdfsUtils {
       this.aclStatus = aclStatus;
     }
 
-    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "HIVE-23613: intended_TO_DO")
+    @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "intended_to_do")
     public FileStatus getFileStatus() {
       return fileStatus;
     }

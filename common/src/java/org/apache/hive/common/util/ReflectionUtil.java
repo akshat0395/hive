@@ -18,12 +18,9 @@
 
 package org.apache.hive.common.util;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -130,7 +127,7 @@ public class ReflectionUtil {
    * @param value new value
    * @throws RuntimeException in case the field is not found or cannot be set.
    */
-  @SuppressFBWarnings(value = "REFLF_REFLECTION_MAY_INCREASE_ACCESSIBILITY_OF_FIELD", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "REFLF_REFLECTION_MAY_INCREASE_ACCESSIBILITY_OF_FIELD", justification = "intended_to_do")
   public static void setField(Object object, String field, Object value) {
     try {
       Field fieldToChange = object.getClass().getDeclaredField(field);
@@ -141,7 +138,7 @@ public class ReflectionUtil {
     }
   }
 
-  @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", justification = "HIVE-23613: intended_TO_DO")
+  @SuppressFBWarnings(value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE", justification = "intended_to_do")
   public static void setField(Object object, Field fld, Object value) {
     try {
       fld.setAccessible(true);
@@ -171,18 +168,6 @@ public class ReflectionUtil {
       fieldToChange.set(object, value);
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new RuntimeException("Cannot set field %s in object %s".formatted(field, object.getClass()));
-    }
-  }
-
-  public static void setStaticFinalFieldsModifiable(Field field) {
-    try {
-      field.setAccessible(true);
-      VarHandle modifiersHandle = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup())
-              .findVarHandle(Field.class, "modifiers", int.class);
-      int modifiers = field.getModifiers();
-      modifiersHandle.set(field, modifiers & ~Modifier.FINAL);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new RuntimeException("Cannot make static final field %s modifiable".formatted(field));
     }
   }
 }

@@ -28,7 +28,7 @@ env:
   DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
 
 jobs:
-  macos-jdk17:
+  macos-jdk8:
     name: 'macOS (JDK 17)'
     runs-on: macos-latest
     steps:

@@ -64,10 +64,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>jul-to-slf4j</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-client</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -82,10 +78,6 @@
         <exclusion>
           <groupId>org.slf4j</groupId>
           <artifactId>jul-to-slf4j</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -655,14 +647,6 @@
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-json</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-client</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -899,7 +883,7 @@
     <dependency>
       <groupId>org.roaringbitmap</groupId>
       <artifactId>RoaringBitmap</artifactId>
-      <version>${roaringbit.version}</version>
+      <version>0.9.22</version>
     </dependency>
   </dependencies>
   <profiles>
@@ -1023,7 +1007,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>${maven.test.jvm.args}</argLine>
+          <argLine>-Xmx2048m --add-opens java.base/java.net=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens java.base/java.util.regex=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.sql/java.sql=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.text=ALL-UNNAMED</argLine>
           <environmentVariables>
             <HIVE_CLUSTER_ID>hive-test-cluster-id-env</HIVE_CLUSTER_ID>
             <TZ>US/Pacific</TZ>
@@ -1150,6 +1134,7 @@
                   <include>org.apache.calcite.avatica:avatica</include>
                   <include>com.esri.geometry:esri-geometry-api</include>
                   <include>org.roaringbitmap:RoaringBitmap</include>
+                  <include>org.roaringbitmap:shims</include>
                   <include>com.github.luben:zstd-jni</include>
                 </includes>
               </artifactSet>
