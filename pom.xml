@@ -1913,29 +1913,6 @@
         <artifactId>jamon-maven-plugin</artifactId>
         <version>${jamon.plugin.version}</version>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <doclint>none</doclint>
-          <useStandardDocletOptions>false</useStandardDocletOptions>
-          <additionalDependencies>
-            <additionalDependency>
-              <groupId>io.dropwizard.metrics</groupId>
-              <artifactId>metrics-core</artifactId>
-              <version>3.1.0</version>
-            </additionalDependency>
-          </additionalDependencies>
-        </configuration>
-        <executions>
-          <execution>
-            <id>aggregate</id>
-            <goals>
-              <goal>aggregate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <profiles>
